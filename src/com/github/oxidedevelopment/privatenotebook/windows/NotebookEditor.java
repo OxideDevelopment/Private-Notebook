@@ -1,6 +1,7 @@
 package com.github.oxidedevelopment.privatenotebook.windows;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Created by: Justin
@@ -9,22 +10,29 @@ import javax.swing.*;
  */
 public class NotebookEditor extends JFrame {
 
+    JPanel menuPanel;
+    JMenuBar menu;
+    JPanel textPanel;
+    JTextArea editor;
+
     public NotebookEditor() {
         super("Private Notebook");
         createGui();
     }
 
     private void createGui() {
-        JPanel panel = new JPanel();
-       
-        JMenuBar menu = new JMenuBar();
+        menuPanel = new JPanel();
+
+        menu = new JMenuBar();
         setJMenuBar(menu);
-        panel.add(menu);
+        menuPanel.add(menu);
 
-        JTextArea editor = new JTextArea();
-        panel.add(editor);
+        textPanel = new JPanel();
+        editor = new JTextArea();
+        menuPanel.add(editor);
 
-        add(panel);
+        add(menuPanel, BorderLayout.NORTH);
+        add(textPanel, BorderLayout.CENTER);
     }
 
 

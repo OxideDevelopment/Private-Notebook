@@ -1,6 +1,8 @@
 package com.github.oxidedevelopment.privatenotebook;
 
 import com.github.oxidedevelopment.privatenotebook.utils.BCrypt;
+import com.github.oxidedevelopment.privatenotebook.utils.NotebookDirectory;
+import com.github.oxidedevelopment.privatenotebook.windows.NotebookEditor;
 import com.github.oxidedevelopment.privatenotebook.windows.PasswordHandler;
 
 import javax.swing.*;
@@ -16,6 +18,7 @@ public class PrivateNotebook {
     public static String workingDir;
     private static PasswordHandler pw_handle;
     public static char[] enteredPW;
+    public static NotebookDirectory notebookDirectory;
 
     public static void main(String[] args){
         pw_handle = new PasswordHandler();
@@ -39,8 +42,10 @@ public class PrivateNotebook {
 
         workingDir = home;
 
+
         File directory = new File(home);
         if(directory.exists()){
+            notebookDirectory = new NotebookDirectory(new File(home), true);
             //Ask user for password..
             String userPassword = JOptionPane.showInputDialog("Please enter your password: ");
 
@@ -55,20 +60,25 @@ public class PrivateNotebook {
                 String canidate = reader.readLine();
                 if(BCrypt.checkpw(userPassword, canidate)){
                     enteredPW = userPassword.toCharArray();
-
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            NotebookEditor editor = new NotebookEditor();
+                            editor.setVisible(true);
+                        }
+                    });
                 }else{
                     JOptionPane.showMessageDialog(null,"Invalid password.", "Error", JOptionPane.ERROR_MESSAGE);
-                    main(null);
+                    main(args);
                 }
             } catch (IOException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
 
         }else{
-            directory.mkdir();
+            notebookDirectory = new NotebookDirectory(new File(home), false);
             pw_handle.createPW();
-
-            main(null);
+            main(args);
         }
     }
 }

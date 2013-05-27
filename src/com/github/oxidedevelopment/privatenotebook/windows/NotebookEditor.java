@@ -37,14 +37,22 @@ public class NotebookEditor extends JFrame {
         setJMenuBar(menu);
         //Adding the file item to menubar
         JMenuItem file_open = new JMenuItem("Open");
+        JMenuItem file_save = new JMenuItem("Save");
         file_open.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 openFile();
             }
         });
+        file_save.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveFile();
+            }
+        });
 
         fileMenu.add(file_open);
+        fileMenu.add(file_save);
         menu.add(fileMenu);
 
         textPanel = new JPanel();
@@ -67,7 +75,26 @@ public class NotebookEditor extends JFrame {
     }
 
     private void openFile() {
-        PrivateNotebook.notebookDirectory.openSave();
+       String[] result = PrivateNotebook.notebookDirectory.openSave();
+       if(!result[0].equals("") && !result[1].equals("")){
+           setTitle("Private Notebook - " + result[0]);
+           editor.setText(result[1]);
+       }
+    }
+
+    private void saveFile(){
+        //save file
+        String name;
+        String title;
+        String body = editor.getText();
+
+        JFileChooser dlg = new JFileChooser(PrivateNotebook.notebookDirectory.savePath);
+        if(dlg.showSaveDialog(this) == JFileChooser.APPROVE_OPTION){
+            name = dlg.getSelectedFile().getName();
+            title = JOptionPane.showInputDialog(this, "Title:");
+            PrivateNotebook.notebookDirectory.saveFile(name, title, body, PrivateNotebook.saltedPW);
+        }
+
     }
 
 

